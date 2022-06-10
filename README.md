@@ -1,74 +1,82 @@
-# CD
-include<stdio.h>
-include<string.h>
-struct syt{
-char v[10],t[10];
-int s;
-} st[50];
-char *tt[] = {"int","float","long","double","short"};
-int vt[5]= {2,4,6,8,1};
-FILE *fp;
-int main(){
-char *fn,u[20],t[20],s[100],*p;
-int i=0,j,k,l,y,sp=0;
-fp=fopen("out.c","r");
-printf("\nSymbol table maintenance");
-printf("\n\tVariable\tType\t\tsize\n");
-while(!feof(fp)) {
-fscanf(fp,"%s",s);
-for(i=0;i<5;i++)
-if(strcmp(s,tt[i])==0) {
-fscanf(fp,"%s",s);
-p=strchr(s,',');
-if(p) {
-j=0;
-while(s[j]!=',')
-j++;
-for(k=0;k<j;k++)
-t[k]=s[k];
-t[k]='\0';
-printf("\n%10s\t%10s\t%10d",t,tt[i],vt[i]);
-strcpy(st[sp].v,t);
-strcpy(st[sp].t,tt[i]);
-st[sp].s=vt[i];
-sp++;
-kjk:
-y=j;
-j++;
-while(s[j]!='\0'&&s[j]!=',')
-j++;
-for(l=y;l<j;l++)
-t[l-2]='\0';
-printf("\n%10s\t%10s\t%10d",t,tt[i],vt[i]);
-strcpy(st[sp].t,tt[i]);
-st[sp].s=vt[i];
-sp++;
-if(s[j]==',')
-goto kjk;
+
+#include<stdio.h>
+#include<math.h>
+#include<string.h>
+#include<ctype.h>
+#include<stdlib.h>
+
+int n,m=0,p,i=0,j=0;
+char a[10][10],f[10];
+void follow(char c);
+void first(char c);
+
+int main()
+{
+    int i,z;
+    char c,ch;
+    printf("Enter the no of prooductions:\n");
+    scanf("%d",&n);
+    printf("Enter the productions:\n");
+    for(i=0;i<n;i++)
+        scanf("%s%c",a[i],&ch);
+    do
+    {
+        m=0;
+        printf("Enter the elemets whose fisrt & follow is to be found:");
+        scanf("%c",&c);
+        first(c);
+        printf("First(%c)={",c);
+        for(i=0;i<m;i++)
+            printf("%c",f[i]);
+        printf("}\n");
+        strcpy(f," ");
+        //flushall();
+        m=0;
+        follow(c);
+        printf("Follow(%c)={",c);
+        for(i=0;i<m;i++)
+            printf("%c",f[i]);
+        printf("}\n");
+        printf("Continue(0/1)?");
+        scanf("%d%c",&z,&ch);
+    }while(z==1);
+    return(0);
 }
-else{
-printf("\n%10s\t%10s\t%10d",s,tt[i],vt[i]);
-strcpy(st[sp].v,t);
-strcpy(st[sp].t,tt[i]);
-st[sp].s=vt[i];
+
+void first(char c)
+{
+    int k;
+    if(!isupper(c))
+        f[m++]=c;
+    for(k=0;k<n;k++)
+    {
+        if(a[k][0]==c)
+        {
+            if(a[k][2]=='$')
+                follow(a[k][0]);
+            else if(islower(a[k][2]))
+                f[m++]=a[k][2];
+            else 
+                first(a[k][2]);
+        }
+    }
 }
-}
-}
-fclose(fp);
-for(i=0;i<sp;i++)
-strcpy(t,st[i].v);
-k=0;
-for(j=0;j<strlen(t);j++) {
-if(t[i]!=',') {
-u[k]=u[j];
-k++;
-}
-u[k]='\0';
-strcpy(st[i].v,u);
-}
-for(i=0;i<sp-2;i++)
-for(j=i+1;j<sp;j++) {
-if(strcmp(st[i].v,st[j].v)==0)
-printf("\n\nMultiple Declaration for %s",st[i].v);
-}
+
+void follow(char c)
+{
+    if(a[0][0]==c)
+        f[m++]='$';
+    for(i=0;i<n;i++)
+    {
+        for(j=2;j<strlen(a[i]);j++)
+        {
+            if(a[i][j]==c)
+            {
+                if(a[i][j+1]!='\0')
+                    first(a[i][j+1]);
+                if(a[i][j+1]=='\0' && c!=a[i][0])
+                    follow(a[i][0]);
+            }
+        }
+    }
 }
