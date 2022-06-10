@@ -10,7 +10,7 @@
 %%
 expr: expr '+' expr |expr '-' expr |expr '*' expr |expr '/' expr |'-'NUMBER
 |'-'ID |'('expr')' |NUMBER |ID
-;
+
 %%
 
 // token from lex file // left associative
