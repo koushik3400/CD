@@ -1,6 +1,6 @@
 # CD
-# include<stdio.h>
-# include<string.h>
+include<stdio.h>
+include<string.h>
 struct syt{
 char v[10],t[10];
 int s;
